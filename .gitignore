@@ -1,0 +1,11 @@
+*.ipynb_checkpoints*
+notebooks*
+numerics*
+figures*
+notebooks/tmp.gif
+*.DS_Store
+*.synctex.gz
+*.log
+*.aux
+*.bib
+.history/
