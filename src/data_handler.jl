@@ -36,13 +36,16 @@ function import_data(
     text = replace(text, ","=>"\t")
     eval(Meta.parse("wind = [$text]"))
 
-    wind_loc = collect(1:size(wind,1)) # !!!!!!!!!! quick fixe, NEED TO BE CHANGED 
+    text = read(dirname*"wind_loc.csv", String)
+    text = replace(text, ","=>"\t")
+    eval(Meta.parse("wind_loc = vec([$text])"))
+
     min_on_time = 5*ones(size(gen,1)) # !!!!!!!!!! quick fixe, NEED TO BE CHANGED 
     min_down_time = 5*ones(size(gen,1)) # !!!!!!!!!! quick fixe, NEED TO BE CHANGED 
     
     return PSdata(Int64.(gen[:,1]), wind_loc, gen[:,10] / basemva, gen[:,9] / basemva,
         Int64.(line[:,1:2]), 1 ./ line[:,4], line[:,6] / basemva, demand / basemva,
-        wind / basemva, gencost[:,6], gencost[:,5], min_on_time, min_down_time,
+        wind / basemva, gencost[:,6], gencost[:,5], gencost[:,7], min_on_time, min_down_time,
         size(bus,1), size(line,1), size(gen,1), size(wind,1), size(demand,2), basemva)
 end
 
@@ -54,6 +57,9 @@ function import_data_from_hdf5(
     # be provided.
     raw_data = h5read(filename, "/")
     fields = fieldnames(PSdata)
+    #fields = ["gen_loc", "wind_loc", "min_gen", "max_gen", "line_id",  "line_susceptance",
+    #    "line_limit", "demand", "wind", "lin_cost", "quad_cost", "min_on_time",
+    #    "min_down_time", "Nbus", "Nline", "Ngen", "Nwind", "Nt", "sb"]
     data = Tuple(raw_data[String(f)] for f in fields) 
     return PSdata(data...)
 end

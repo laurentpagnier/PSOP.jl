@@ -16,8 +16,10 @@ struct PSdata
     line_limit::Vector{Float64}
     demand::Matrix{Float64}
     wind::Matrix{Float64}
+    ramping_rate::Vector{Float64} # in pu/hour
     lin_cost::Vector{Float64}
     quad_cost::Vector{Float64}
+    on_cost::Vector{Float64} # cost for being on duty
     min_on_time::Vector{Int64}
     min_down_time::Vector{Int64}
     Nbus::Int64
@@ -31,5 +33,6 @@ end
 include("data_handler.jl")
 include("optimal_power_flow.jl")
 include("unit_commitment.jl")
+include("real_time_dispatch.jl")
 
 end
