@@ -20,6 +20,8 @@ struct PSdata
     lin_cost::Vector{Float64}
     quad_cost::Vector{Float64}
     on_cost::Vector{Float64} # cost for being on duty
+    startup_cost::Vector{Float64}
+    shutdown_cost::Vector{Float64}
     min_on_time::Vector{Int64}
     min_down_time::Vector{Int64}
     Nbus::Int64
