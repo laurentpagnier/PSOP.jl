@@ -7,7 +7,7 @@ function run_rt(
     cur_penalty = 100,
     redispatch_penalty = 50,
 )
-    model = Model(Gurobi.Optimizer)
+    model = Model(() -> Gurobi.Optimizer(GRB_ENV))
     #set_silent(model)
 
 

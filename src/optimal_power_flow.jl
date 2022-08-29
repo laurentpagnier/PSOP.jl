@@ -5,7 +5,7 @@ function run_std_dc_opf(
     ps::PSdata;
     t = 1
 )
-    model = Model(Gurobi.Optimizer)
+    model = Model(() -> Gurobi.Optimizer(GRB_ENV))
     set_silent(model)
     
     # define variables
@@ -56,7 +56,7 @@ function run_ptdf_dc_opf(
 )
     # This version of is there mostly for testing purposes, it is significantly
     # less efficient the std_dc_opf for large systems
-    model = Model(Gurobi.Optimizer)
+    model = Model(() -> Gurobi.Optimizer(GRB_ENV))
     set_silent(model)
     
     ptdf = create_ptdf_matrix(ps)

@@ -1,5 +1,7 @@
 module PSOP
 
+const GRB_ENV = Gurobi.Env()
+
 using Gurobi
 using JuMP
 using SparseArrays

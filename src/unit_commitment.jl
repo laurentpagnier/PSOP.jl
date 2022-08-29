@@ -12,7 +12,7 @@ function run_uc(
     Nseg = 3,
 )
     # create a gurobi model and set a few attibute
-    model = Model(Gurobi.Optimizer)
+    model = Model(() -> Gurobi.Optimizer(GRB_ENV))
     if(!verbose)
         set_silent(model)
     end
