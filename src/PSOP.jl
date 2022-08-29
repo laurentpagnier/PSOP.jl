@@ -1,12 +1,12 @@
 module PSOP
 
-const GRB_ENV = Gurobi.Env()
-
 using Gurobi
 using JuMP
 using SparseArrays
 using LinearAlgebra
 using HDF5
+
+const GRB_ENV = Gurobi.Env()
 
 struct PSdata
     gen_loc::Vector{Int64} # where (i.e. bus ids) the generators are located
