@@ -34,6 +34,17 @@ struct PSdata
     sb::Float64 # base MVA
 end
 
+struct PSresult
+    gen::Matrix{Float64} # generators' outputs
+    th::Matrix{Float64} # buses' phases
+    shed::Matrix{Float64} 
+    cur::Matrix{Float64}
+    ison::Matrix{Float64}
+    startup::Matrix{Float64}
+    shutdown::Matrix{Float64}
+    lmp::Matrix{Float64}
+end
+
 include("data_handler.jl")
 include("optimal_power_flow.jl")
 include("unit_commitment.jl")

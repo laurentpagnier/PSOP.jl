@@ -1,8 +1,8 @@
-export import_data, save_as_hdf5, import_data_from_hdf5
-
+export import_data, save_as_hdf5, import_from_hdf5, copy_psdata
 function import_data(
     dirname::String
 )
+    # This function is deprecated, please use the hdf5 functions
     # load the structure of the power system
     text = read(dirname*"case.m", String)
     mva = collect.(findall("mpc.baseMVA", text))[1][end]+1
@@ -50,26 +50,41 @@ function import_data(
 end
 
 
-function import_data_from_hdf5(
+function copy_psdata(ps::PSdata)
+    fields = fieldnames(PSdata)
+    data = Tuple(copy(getproperty(ps, f)) for f in fields)
+    return PSdata(data...)
+end
+
+
+function import_from_hdf5(
     filename::String
 )
     # This function is not foolproof, it expects all the fields to
     # be provided.
     raw_data = h5read(filename, "/")
-    fields = fieldnames(PSdata)
-    #fields = ["gen_loc", "wind_loc", "min_gen", "max_gen", "line_id",  "line_susceptance",
-    #    "line_limit", "demand", "wind", "lin_cost", "quad_cost", "min_on_time",
-    #    "min_down_time", "Nbus", "Nline", "Ngen", "Nwind", "Nt", "sb"]
+    if !isempty(findall(collect(keys(raw_data)) .== "gen"))
+        t = PSresult
+    elseif !isempty(findall(collect(keys(raw_data)) .== "demand"))
+        t = PSdata
+    else
+        println("Can't dectect the file's type, if the file might be corrupted")
+    end
+    fields = fieldnames(t)
     data = Tuple(raw_data[String(f)] for f in fields) 
-    return PSdata(data...)
+    return t(data...)
 end
 
 
 function save_as_hdf5(
     filename::String,
-    ps::PSdata,
+    ps::Union{PSdata,PSresult},
 )
-    fields = fieldnames(PSdata)
+    if typeof(ps) == PSdata
+        fields = fieldnames(PSdata)
+    else
+        fields = fieldnames(PSresult)
+    end
     fid = h5open(filename, "w")
     for f in fields
         fid[String(f)] = getproperty(ps, f)

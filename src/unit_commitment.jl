@@ -71,8 +71,8 @@ function run_uc(
     cb = @constraint(model, gen2bus * gen + wind2bus * wind_gen
             + to_bus * flow - from_bus * flow .== demand)
     # global balance (optional) might help gurobi
-    cb2 = @constraint(model, sum(gen, dims=1)
-        + sum(wind_gen, dims=1) .== sum(demand, dims=1))
+    #cb2 = @constraint(model, sum(gen, dims=1)
+    #    + sum(wind_gen, dims=1) .== sum(demand, dims=1))
 
     # decision variable and ramping constraints
     r = ps.ramping_rate
@@ -126,17 +126,18 @@ function run_uc(
     fix.(shutdown, temp3, force=true)
     optimize!(model)
 
-    lmp = [dual(cb[i,t]) for i=1:ps.Nbus, t=1:ps.Nt]
-    mu = [dual(cfmax[k,t]) for k=1:ps.Nline, t=1:ps.Nt]
-    nu = [dual(cfmin[k,t]) for k=1:ps.Nline, t=1:ps.Nt]
-    lambda = [dual(cb[t]) for t=1:ps.Nt]
+    #lmp = dual.(cb)
+    #mu = dual.(cfmax)
+    #nu = dual.(cfmin)
+    #lambda = [dual(cb[t]) for t=1:ps.Nt]
 
-    ison = value.(ison)
-    gen = value.(gen)
-    th = value.(th)
-    shed = value.(shed)
-    cur = value.(cur)
-    return gen, th, shed, cur, ison, lmp
+    #ison = value.(ison)
+    #gen = value.(gen)
+    #th = value.(th)
+    #shed = value.(shed)
+    #cur = value.(cur)
+    return PSresult(value.(gen), value.(th), value.(shed), value.(cur),
+        value.(ison), value.(startup), value.(shutdown), dual.(cb))
 end
 
 
