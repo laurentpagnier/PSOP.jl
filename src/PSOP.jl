@@ -6,7 +6,11 @@ using SparseArrays
 using LinearAlgebra
 using HDF5
 
-const GRB_ENV = Gurobi.Env()
+const GRB_ENV = Ref{Gurobi.Env}()
+function __init__()
+    GRB_ENV[] = Gurobi.Env()
+    return
+end
 
 struct PSdata
     gen_loc::Vector{Int64} # where (i.e. bus ids) the generators are located

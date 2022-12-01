@@ -3,9 +3,10 @@ export run_std_dc_opf, run_ptdf_dc_opf
 
 function run_std_dc_opf(
     ps::PSdata;
-    t = 1
+    verbose::Bool = false,
+    t = 1,
 )
-    model = Model(() -> Gurobi.Optimizer(GRB_ENV))
+    model = Model(() -> Gurobi.Optimizer(GRB_ENV[]))
     set_silent(model)
     
     # define variables
@@ -41,7 +42,7 @@ function run_std_dc_opf(
     optimize!(model)
     
     if(termination_status(model) == MOI.INFEASIBLE)
-        println("The problem is infeasible")
+        verbose ? println("The problem is infeasible") : nothing
         return nothing, nothing, nothing
     else
         lmp = dual.(balance_cons)
@@ -52,7 +53,8 @@ end
 
 function run_ptdf_dc_opf(
     ps::PSdata;
-    t = 1
+    verbose::Bool = false,
+    t = 1,
 )
     # This version of is there mostly for testing purposes, it is significantly
     # less efficient the std_dc_opf for large systems
@@ -84,7 +86,7 @@ function run_ptdf_dc_opf(
     
     optimize!(model)
     if(termination_status(model) == MOI.INFEASIBLE)
-        println("The problem is infeasible")
+        verbose ? println("The problem is infeasible") : nothing
         return nothing, nothing
     else
         # here the price consist of 2 terms: the means price and
